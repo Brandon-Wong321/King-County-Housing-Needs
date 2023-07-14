@@ -1,0 +1,157 @@
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Titillium Web', serif;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+/* the layout of the legend panel */
+#legend {
+  /* position: absolute; */
+  /* bottom: 0; */
+  /* right: 0; */
+  width: 180px;
+  background: #fff;
+  margin-right: 10px;
+  margin-bottom: 40px;
+  padding: 10px 20px 10px 10px;
+  border-radius: 3px;
+  text-align: left;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* each line for a break */
+.break {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+}
+
+/* basic style for a dot/circle */
+.dot {
+  display: inline-block;
+  margin-top: 5px;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+/* the label for the dot */
+.dot-label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-style: italic;
+}
+
+/* the text color of a hyper link */
+a {
+  color: black
+}
+
+/* sidebar */
+#info {
+  z-index: 100;
+  position: absolute;
+  width: 300px;
+  top: 50%;
+  right: .5%;
+  padding: 40px 15px 40px 15px;
+  background: #343a40;
+  color: white;
+
+}
+
+.c3 text {
+  fill: black;
+  color: black;
+  font-size:12px;
+}
+.c3-axis-y text {
+  fill: black;
+  font-size:12px;
+}
+.c3-axis-x text {
+   font-size:12px;
+   fill:black;
+}
+
+/* social media icons */
+#info a {
+  color: lightgray;
+}
+
+#info a:hover {
+  color: white;
+  opacity: 0.3;
+}
+
+#title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: 20px;
+  margin-left: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 25pt;
+  color: white
+}
+
+#subtitle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: 70px;
+  margin-left: 190px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15pt;
+  color: white
+}
+
+/* social media icons */
+#title span {
+  font-size: 14px;
+  float: right;
+  margin-right: 10px;
+}
+
+#desc-1 {
+  text-align: center;
+  color: lightgray;
+  font-size: medium;
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+
+#earthquake-count {
+  margin: 0;
+  text-align: center;
+  color: orange;
+  font-size: 50px;
+}
+
+#earthquake-chart {
+  top: 20px;
+}
+
+
+#footer {
+  position: static;
+  bottom: 50%;
+  margin-bottom: 20px;
+  margin-right: 10px;
+  font-size: 13px;
+  line-height: 150%;
+  color: lightgray;
+}
+
+.chart {
+  background-color: white;
+}
+
