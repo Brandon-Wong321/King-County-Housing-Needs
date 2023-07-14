@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="c3js/c3.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>Population by Race in King County</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <!-- include google web fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web|Oswald" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
+    <!-- include icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/c3.min.css">
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/bootstrap_style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css"/>
+  
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
+    <style>
+      h2, h3 {
+          margin: 10px;
+          font-size: 18px;
+      }
+
+      h3 {
+          font-size: 16px;
+      }
+
+      p {
+          margin: 10px;
+      }
+
+      #map {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+      }
+
+      .map-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          margin-left: 20px;
+          font-family: Arial, sans-serif;
+          overflow: auto;
+          border-radius: 3px;
+          margin-top: 32px;
+      }
+
+      #legend {
+          width: 350px;
+          display:block;
+
+          background: rgba(255, 255, 255, 0.8);
+          border-style: solid;
+          border-width: 1px;
+          border-color: rgba(0, 0, 0, 0.2);
+          margin-top: 25px;
+          overflow-y: scroll;
+          height: 445px;
+      }
+
+      #features {
+          /* top: 40px; */
+          height: 125px;
+          /* margin-top: 20px; */
+          width: 350px;
+          display:block;
+          margin-top: 25px;
+
+          background: rgba(255, 255, 255, 0.8);
+          border-style: solid;
+          border-width: 1px;
+          border-color: rgba(0, 0, 0, 0.2);
+      }
+
+      .legend-key {
+          display: inline-block;
+          border-radius: 20%;
+          width: 10px;
+          height: 10px;
+          margin-right: 5px;
+      }
+      .kc_chart {
+          margin-left: 25px;
+
+      }
+      
+      @media screen and (min-width: 1920px) {
+          #legend {
+              width:400px;
+          }
+          #features {
+              width:400px;
+          }
+      }
+
+      .mapboxgl-canvas-container.mapboxgl-interactive,
+      .mapboxgl-ctrl-group button.mapboxgl-ctrl-compass {
+      cursor: unset;
+      }
+    </style>
+</head>
+
+<body>
+      <!-- Navigation-->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container px-4 px-lg-5">
+          <a class="navbar-brand" href="index.html">King County Rent Price</a>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item active"><a class="nav-link" href="home.html">Home</a></li>
+                  <li class="nav-item"><a class="nav-link" href="median_rent.html">Median Rent Map</a></li>
+                  <li class="nav-item"><a class="nav-link" href="median_income.html">Median Income Map</a></li>
+                  <li class="nav-item"><a class="nav-link" href="demographics.html">Race Population Map</a></li>
+                  <li class="nav-item"><a class="nav-link" href="data_resource.html">Data Sources & Reference</a></li>
+                  <li class="nav-item"><a class="nav-link" href="about_us.html">About Us</a></li>
+  
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="map"></div>
+    <div class="map-overlay"> <!-- Added this -->
+        <div id="features"> <!-- Added this -->
+            <h2>Population by Race in King County by Census Tract</h2>
+            <div id='text-escription'>
+                <p>Choropleth Map Made by Brandon Wong</p>
+            </div> <!-- Added this -->
+        </div>
+        <div id='legend'></div> <!-- Moved this, and modified -->
+    </div>
+    <script>
+        mapboxgl.accessToken =
+            'pk.eyJ1IjoiamFrb2J6aGFvIiwiYSI6ImNpcms2YWsyMzAwMmtmbG5icTFxZ3ZkdncifQ.P9MBej1xacybKcDN_jehvw';
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/dark-v10',
+            projection: 'albers',
+            zoom: 8.3,
+            center: [-121.9830, 47.4392]
+        });
+
+        async function geojsonFetch() {
+            let response = await fetch('assets/demographics.geojson');
+            let nonWhiteData = await response.json();
+
+            map.on('load', function loadingData() {
+                map.addSource('nonWhiteData', {
+                    type: 'geojson',
+                    data: nonWhiteData
+                });
+
+                map.addLayer({
+                    'id': 'nonWhiteData-layer',
+                    'type': 'fill',
+                    'source': 'nonWhiteData',
+                    'paint': {
+                        'fill-color': [
+                            'step',
+                            ['get', 'non_white'],
+                            "rgba(237, 248, 233, 1)", 
+                            1004, 
+                            "rgba(186, 228, 179, 1)", 
+                            1571,
+                            "rgba(116, 196, 118, 1)", 
+                            2253,
+                            "rgba(49, 163, 84, 1)", 
+                            3220,
+                            "rgba(0, 109, 44, 1)",
+                            6894,
+                            "rgb(160, 160, 160)", 
+                        ],
+                        'fill-outline-color': '#000000',
+                        'fill-opacity': 0.7,
+                    }
+                });
+
+                const layers = [
+                    '0-1004',
+                    '1004-1571',
+                    '1571-2253',
+                    '2253-3220',
+                    '3220-6894',
+                    'Missing Data',
+                ];
+                const colors = [
+                  "rgba(237, 248, 233, 1)", 
+                  "rgba(186, 228, 179, 1)", 
+                  "rgba(116, 196, 118, 1)", 
+                  "rgba(49, 163, 84, 1)", 
+                  "rgba(0, 109, 44, 1)",
+                  "rgb(160, 160, 160)"
+                ];
+
+                const legend = document.getElementById('legend');
+                legend.innerHTML = "<b>Non-White Population by Census Tract in King County<br></b><br><br>";
+                const source =
+                    '<p style="text-align: right; font-size:10pt"> Data Source: <a href="https://gis-kingcounty.opendata.arcgis.com/datasets/kingcounty::demographic-base-demographic-base-area/explore?location=47.430036%2C-121.802498%2C10.00&showTable=true"><br>King County GIS Open Data</br></a></p>';
+
+                layers.forEach((layer, i) => {
+                    const color = colors[i];
+                    const item = document.createElement('div');
+                    const key = document.createElement('span');
+                    key.className = 'legend-key';
+                    key.style.backgroundColor = color;
+
+                    const value = document.createElement('span');
+                    value.innerHTML = `${layer}`;
+                    item.appendChild(key);
+                    item.appendChild(value);
+                    legend.appendChild(item);
+                });
+                legend.innerHTML += '<hr>'
+                legend.innerHTML += '<small>Median Income by Non-White Tracts in King County</small>'
+                legend.innerHTML += '<br>'
+                legend.innerHTML += '<button class = "btn btn-secondary" id = "toggle_chart">show chart</button>'
+                legend.innerHTML += '<div class = "kc_chart" id = "chart_race_pop"></div>'
+                 
+                median_income_with_pop();
+                legend.innerHTML += source;
+            });
+
+            map.on("click", "nonWhiteData-layer", (event) => {
+              new mapboxgl.Popup()
+                .setLngLat(event.lngLat)
+                .setHTML(
+                  `<strong>Census Tract:</strong> ${event.features[0].properties.TRACT_LBL_1}
+                  <hr>
+                  <strong>Total Population:</strong> ${event.features[0].properties.TotalPopulation}
+                  <hr>
+                  <strong>White Population:</strong> ${event.features[0].properties.WhiteAlone}
+                  <hr>
+                  <strong>Black Population:</strong> ${event.features[0].properties.BlackAlone}
+                  <hr>
+                  <strong>Asian Population:</strong> ${event.features[0].properties.AsianAlone}
+                  <hr>
+                  <strong>American Indian and Alaska Native Population:</strong> ${event.features[0].properties.AIANAlone}`
+                )
+                .addTo(map);
+            });
+            
+            map.on('mouseenter', 'nonWhiteData-layer', () => {
+              map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', 'states-layer', () => {
+              map.getCanvas().style.cursor = '';
+            });
+
+        }
+        geojsonFetch();
+    </script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="c3js/c3.min.js"></script>
+    <script src = "js/charts.js"></script>
+</body>
+</html>
